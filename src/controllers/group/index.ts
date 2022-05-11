@@ -218,7 +218,7 @@ exports.invite = async (req: Request, res: Response) => {
               res.status(500).send("Something went wrong please check your input");
             } else {
               if(!result[0]){
-                return res.status(400).send("This is not a registerd user")
+                return res.status(400).send("This is not a registerd user, please send an invite toa registered user")
               }else{
 
                 const emailToken = jwt.sign({email:email, id:req.body.group}, process.env.SECERET_KEY, {expiresIn: "1d"})
@@ -228,7 +228,7 @@ exports.invite = async (req: Request, res: Response) => {
                         subject: 'Confirm Email',
                         html: `You have been invited to join  savings group, please click this link to join: <a href="${url}">${url}</a>`,
                     })
-                    res.status(200).send("Invite sent please check your email or spam for a link")
+                    res.status(200).send("Invite sent to user's email")
               }
 
             }
@@ -244,15 +244,45 @@ exports.invite = async (req: Request, res: Response) => {
 
 exports.process = async (req: Request, res: Response) => {
   try {
+    const id = res.locals.user.id;
+    const groupId = req.params.group;
+    const user = res.locals.user
+    var users
     const token = req.query.token;
-    const {id, email} = jwt.verify(token, process.env.SECERET_KEY)
+    const {email} = jwt.verify(token, process.env.SECERET_KEY)
+
     const sql = `UPDATE users SET groupId = ${id} WHERE email = '${email}'`;
-    await db.query(sql, (err: any, result: any) => {
+    await db.query(sql, async(err: any, result: any) => {
       if (err) {
         console.log(err);
         res.status(500).send("Something went wrong");
       } else {
-        res.status(200).send("You have joined this group");
+        // check if a collection exists for a  group
+        const sql = `SELECT * FROM collections WHERE groupId=${groupId}`;
+        await db.query(sql, async(err: any, result: any) => {
+          if (err) {
+            console.log(err);
+            res.status(500).send("Something went wrong");
+          } else {
+            if(!result[0]){
+              return res.status(200).send("You have joined this group sucessfully")
+            }else{
+            users = JSON.parse(result[0].users)
+            users.push(user)
+            const u = JSON.stringify(users)
+            const sql = `UPDATE collections
+            SET users = '${u}' WHERE groupId = ${groupId}`;
+                await db.query(sql, (err: any, result: any) => {
+                  if (err) {
+                    console.log(err);
+                    res.status(500).send("Something went wrong");
+                  } else {
+                    res.status(200).send("You have been added to the group sucessfully");
+                  }
+                });
+          }
+        }
+        });
       }
     });
   } catch (error) {
