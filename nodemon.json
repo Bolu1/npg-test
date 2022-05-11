@@ -9,6 +9,7 @@
     "HOST": "localhost",
     "USER": "guest",
     "PASSWORD": "1234",
-    "DATABASE": "esusu"
+    "DATABASE": "esusu",
+    "URL": "mysql://b5f8bfe1de3b3f:fb26353d@us-cdbr-east-05.cleardb.net/heroku_4d7a7ecebc52925?reconnect=true"
   }
 }
