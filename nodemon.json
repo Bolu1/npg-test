@@ -1,0 +1,14 @@
+{
+  "env": {
+    "ENV": "develpoment",
+    "JWT_KEY": "secret",
+    "PORT": "8080",
+    "SECERET_KEY": "BALLS",
+    "EMAIL": "bolu.bluesprint@gmail.com",
+    "PASS": "18/52hA017",
+    "HOST": "localhost",
+    "USER": "guest",
+    "PASSWORD": "1234",
+    "DATABASE": "esusu"
+  }
+}

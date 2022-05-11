@@ -1,0 +1,10 @@
+{
+  "env": {
+    "ENV": "develpoment",
+    "JWT_KEY": "secret",
+    "PORT": "3000",
+    "SECERET_KEY": "BALLS",
+    "EMAIL": "bolu.bluesprint@gmail.com",
+    "PASS": "18/52hA017"
+  }
+}
