@@ -6,5 +6,5 @@ const router = express()
 
 router.post("/begin", isAuth, begin)
 router.get("/get/:id", isAuth, get)
- 
+ get
 module.exports = router

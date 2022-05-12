@@ -23,6 +23,7 @@ app.use(cors())
 app.use(helmet())
 app.use(morgan('dev'))
 
+//should have stored this in an enioronmental varaible but i had a problem doing so
 const pool = mysql.createPool({ 
     host : 'us-cdbr-east-05.cleardb.net',
     user : 'b5f8bfe1de3b3f', 
@@ -43,9 +44,6 @@ app.use('/v1', v1)
 //database routes
 app.use('/', web)
 // app.use('/db', DB)
-app.get('/docs',  (req, res)=>{
-    res.sendFile(path.join(__dirname, '../docs.html'))
-})
 app.use(express.static(__dirname + '/static'))
 // startMetricsServer()
 app.use((req:Request,res:Response,next:NextFunction)=>{

@@ -1,6 +1,5 @@
 import express, { query, Request, Response } from "express";
 const db = require("../../utils/connect");
-import { createProductInput } from "../../schema/product.schema";
 const jwt =  require ('jsonwebtoken')
 const transporter = require('../../utils/mailer')
 
@@ -244,12 +243,10 @@ exports.invite = async (req: Request, res: Response) => {
 
 exports.process = async (req: Request, res: Response) => {
   try {
-    const id = res.locals.user.id;
-    const groupId = req.params.group;
     const user = res.locals.user
     var users
     const token = req.query.token;
-    const {email} = jwt.verify(token, process.env.SECERET_KEY)
+    const {id, email} = jwt.verify(token, process.env.SECERET_KEY)
 
     const sql = `UPDATE users SET groupId = ${id} WHERE email = '${email}'`;
     await db.query(sql, async(err: any, result: any) => {
@@ -258,7 +255,7 @@ exports.process = async (req: Request, res: Response) => {
         res.status(500).send("Something went wrong");
       } else {
         // check if a collection exists for a  group
-        const sql = `SELECT * FROM collections WHERE groupId=${groupId}`;
+        const sql = `SELECT * FROM collections WHERE groupId=${id}`;
         await db.query(sql, async(err: any, result: any) => {
           if (err) {
             console.log(err);
@@ -271,7 +268,7 @@ exports.process = async (req: Request, res: Response) => {
             users.push(user)
             const u = JSON.stringify(users)
             const sql = `UPDATE collections
-            SET users = '${u}' WHERE groupId = ${groupId}`;
+            SET users = '${u}' WHERE groupId = ${id}`;
                 await db.query(sql, (err: any, result: any) => {
                   if (err) {
                     console.log(err);
